@@ -8,9 +8,7 @@ class Post(models.Model):
     image = models.ImageField(upload_to='images/post',
                               verbose_name='تصویر پست',null=True, blank=True)
     description = models.TextField(verbose_name='متن')
-    slug = models.SlugField()
-    File = models.FileField(upload_to=('Files/post'), null=True, blank=True,
-                             verbose_name='فایل های پست')
+    # slug = models.SlugField()
     created_at = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
@@ -29,4 +27,7 @@ class Link(models.Model):
     class Meta:
         verbose_name = 'لینک'
         verbose_name_plural = 'لینک‌ها'
-    
+        
+class File(models.Model):
+    file = models.FileField(upload_to='files/post', null=True, blank=True,verbose_name='فایل' )
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
