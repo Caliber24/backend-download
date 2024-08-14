@@ -6,3 +6,15 @@ class CreatePost(ModelSerializer):
     
     model=Post
     fields=('__all__')
+    
+class ListPost(ModelSerializer):
+  
+  class Meta:
+    model = Post
+    fields=("__all__")
+    
+
+class UpdatePost(ModelSerializer):
+  class Meta:
+    model=Post
+    fields=('title','image','description')
