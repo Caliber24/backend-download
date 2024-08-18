@@ -18,6 +18,7 @@ class PostViewSet(ModelViewSet):
     search_fields = ['title', 'description', 'collection__title']
     ordering_fields = ['title', 'last_update', 'created_at']
     pagination_class = DefaultPagination
+    
 
 
 class CollectionViewSet(ModelViewSet):

@@ -6,12 +6,13 @@ from jalali_date import date2jalali
 # def upload_to(instance, filename):
 #     return 'images/post/{filename}'.format(filename=filename)
 
+
 class Collection(models.Model):
     title = models.CharField(max_length=255, verbose_name='عنوان دسته‌بندی')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True,
                                blank=True, related_name='children', verbose_name='ابردسته‌بندی')
-    featured_post = models.ForeignKey('Post', on_delete=models.SET_NULL, null=True,
-                                      blank=True, verbose_name='پست‌های دسته‌بندی', related_name='+')
+    post = models.ForeignKey('Post', on_delete=models.SET_NULL, null=True,
+                             blank=True, verbose_name='پست‌های دسته‌بندی', related_name='+')
 
     def __str__(self):
         return self.title
@@ -30,7 +31,7 @@ class Post(models.Model):
         verbose_name='متن کوتاه', null=True, blank=True)
     description = models.TextField(verbose_name='متن')
     collection = models.ForeignKey(
-        Collection, on_delete=models.PROTECT,related_name='posts', verbose_name=("دسته‌بندی"), null=True, blank=True)
+        Collection, on_delete=models.PROTECT, related_name='posts', verbose_name=("دسته‌بندی"), null=True, blank=True)
 
     is_active = models.BooleanField(default=False, verbose_name='فعال')
     created_at = models.DateField(
@@ -50,7 +51,7 @@ class File(models.Model):
     file = models.FileField(upload_to='files/post',
                             null=True, blank=True, verbose_name='فایل')
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    
+
     class Meta:
         verbose_name = 'فایل'
         verbose_name_plural = 'فایل‌ها'

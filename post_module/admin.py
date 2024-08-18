@@ -34,11 +34,11 @@ class PostAdmin(admin.ModelAdmin):
   
   @admin.display(description='تاریخ ایجاد', ordering='created_at')
   def get_created_jalali(self, post):
-    return datetime2jalali(post.created_at).strftime('%a, %d %b %Y %H:%M:%S')
+    return date2jalali(post.created_at).strftime('%a, %d %b %Y')
   
   @admin.display(description='تاریخ ویرایش', ordering='created_at')
   def get_update_jalali(self, post):
-    return datetime2jalali(post.last_update).strftime('%a, %d %b %Y %H:%M:%S')
+    return date2jalali(post.last_update).strftime('%a, %d %b %Y')
 
 
 
@@ -47,7 +47,7 @@ class CollectionAdmin(admin.ModelAdmin):
   list_display=['title','parent','posts_count']
   list_editable=['parent']
   search_fields=['title']
-  autocomplete_fields=['parent','featured_post']
+  autocomplete_fields=['parent','post']
   ordering = ['title']
   list_filter = ['parent']
   list_select_related=['parent']
