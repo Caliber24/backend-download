@@ -6,58 +6,17 @@ from links.models import Link
 from rest_framework import serializers
 
 
-
-class CreatePost(ModelSerializer):
-    class Meta:
-
-        model = Post
-        fields = ('__all__')
-
-
-class ListPost(ModelSerializer):
-    files = SerializerMethodField('get_files')
-    links = SerializerMethodField('get_links')
-    collection_title = SerializerMethodField('get_collection_title')
+class PostSerializer(ModelSerializer):
 
     class Meta:
         model = Post
-        fields = "__all__"
-        extra_fields = ['collection_title', 'files', 'links']
-
-    def get_collection_title(self, post):
-        collection = Collection.objects.get(id=post.collection.id)
-        return collection.title
-
-    def get_files(self, post):
-        files = File.objects.filter(
-            post_id=post.id).values_list('file', flat=True)
-        return files
-
-    def get_links(self, post):
-        links = Link.objects.filter(
-            post_id=post.id).values_list('title', 'link')
-        return links
+        fields = ['id', 'title', 'short_description',
+                  'description', 'is_active', 'created_at', 'last_update', 'collection']
 
 
-class UpdatePost(ModelSerializer):
-    files = SerializerMethodField('get_files')
-    links = SerializerMethodField('get_links')
-    collection_title = SerializerMethodField('get_collection_title')
+class CollectionSerializer(ModelSerializer):
     class Meta:
-        model = Post
-        fields = ('title', 'image', 'short_description',
-                  'description', 'is_active', 'collection_title', 'files', 'links')
+        model = Collection
+        fields = ['id', 'title', 'products_count']
 
-    def get_files(self, post):
-        files = File.objects.filter(
-            post_id=post.id).values_list('file', flat=True)
-        return files
-
-    def get_links(self, post):
-        links = Link.objects.filter(
-            post_id=post.id).values_list('title', 'link')
-        return links
-
-    def get_collection_title(self, post):
-        collection = Collection.objects.get(id=post.collection.id)
-        return collection.title
+    products_count = serializers.IntegerField(read_only=True)

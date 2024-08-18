@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'post_module',
     'rest_framework',
     'jalali_date',
+    'django_filters',
     'links',
     'debug_toolbar',
 ]
@@ -169,11 +170,3 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_PARSER_CLASSES':[
-#         'rest_framework.parsers.JSONParser'
-#     ],
-#     'DEFAULT_RENDER_CLASSES':[
-#         'rest_framework.renders.JSONRenderer'
-#     ]
-# }

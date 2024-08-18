@@ -29,14 +29,13 @@ class Post(models.Model):
     short_description = models.TextField(
         verbose_name='متن کوتاه', null=True, blank=True)
     description = models.TextField(verbose_name='متن')
-    # slug = models.SlugField(unique=True)
     collection = models.ForeignKey(
-        Collection, on_delete=models.PROTECT, verbose_name=("دسته‌بندی"), null=True, blank=True)
+        Collection, on_delete=models.PROTECT,related_name='posts', verbose_name=("دسته‌بندی"), null=True, blank=True)
 
     is_active = models.BooleanField(default=False, verbose_name='فعال')
-    created_at = models.DateTimeField(
+    created_at = models.DateField(
         auto_now_add=True, verbose_name='ساخته شده در')
-    last_update = models.DateTimeField(
+    last_update = models.DateField(
         auto_now=True, verbose_name='ویرایش شده در')
 
     class Meta:
