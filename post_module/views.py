@@ -2,12 +2,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models.aggregates import Count
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
-from .serializers import PostSerializer, CollectionSerializer, LinkSerializer, FileSerializer
+from .serializers import PostSerializer, CollectionSerializer, LinkSerializer, FileSerializer, LinkBoxSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Post, Collection, File
 from .pagination import DefaultPagination
-from links.models import Link
+from links.models import Link, LinkBox
 # Create your views here.
 
 
@@ -38,15 +38,27 @@ class CollectionViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
+class LinkBoxViewSet(ModelViewSet):
+
+    serializer_class = LinkBoxSerializer
+    
+    def get_queryset(self):
+        return LinkBox.objects.prefetch_related('links').filter(post_id=self.kwargs['post_pk'])
+
+    def get_serializer_context(self):
+        return {'post_id': self.kwargs['post_pk']}
+
+
 class LinkViewSet(ModelViewSet):
 
     serializer_class = LinkSerializer
 
     def get_queryset(self):
-        return Link.objects.filter(post_id=self.kwargs['post_pk'])
+        return Link.objects.filter(post_id=self.kwargs['post_pk'], link_box_id=self.kwargs['linksbox_pk'])
 
     def get_serializer_context(self):
-        return {'post_id': self.kwargs['post_pk']}
+        return {'post_id': self.kwargs['post_pk'],
+                'link_box_id': self.kwargs['linksbox_pk']}
 
 
 class FileViewSet(ModelViewSet):
