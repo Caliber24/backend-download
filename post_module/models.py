@@ -1,29 +1,22 @@
 from django.db import models
+from collection_module.models import Collection
+from django.conf import settings
 from django.urls import reverse
-from jalali_date import date2jalali
+
+
 # Create your models here.
 
 # def upload_to(instance, filename):
 #     return 'images/post/{filename}'.format(filename=filename)
 
 
-class Collection(models.Model):
-    title = models.CharField(max_length=255, verbose_name='عنوان دسته‌بندی')
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True,
-                               blank=True, related_name='children', verbose_name='ابردسته‌بندی')
-    post = models.ForeignKey('Post', on_delete=models.SET_NULL, null=True,
-                             blank=True, verbose_name='پست‌های دسته‌بندی', related_name='+')
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        ordering = ['title']
-        verbose_name = 'دسته‌بندی'
-        verbose_name_plural = 'دسته‌بندی‌ها'
-
-
 class Post(models.Model):
+    STATUS_CHOICES = [
+        ('Disable', 0),
+        ('Active', 1),
+        ('Pending', 2)
+    ]
+
     title = models.CharField(max_length=255, verbose_name='عنوان')
     image = models.ImageField(upload_to='images/post',
                               verbose_name='تصویر پست', null=True, blank=True)
@@ -31,12 +24,13 @@ class Post(models.Model):
         verbose_name='متن کوتاه', null=True, blank=True)
     description = models.TextField(verbose_name='متن')
     collection = models.ForeignKey(
-        Collection, on_delete=models.PROTECT, related_name='posts', verbose_name=("دسته‌بندی"), null=True, blank=True)
-
-    is_active = models.BooleanField(default=False, verbose_name='فعال')
-    created_at = models.DateField(
-        auto_now_add=True, verbose_name='ساخته شده در')
-    last_update = models.DateField(
+        Collection, on_delete=models.CASCADE, related_name='posts', verbose_name=("دسته‌بندی"), null=True, blank=True)
+    status = models.PositiveSmallIntegerField(
+        default=2, choices=STATUS_CHOICES)  # 0=disable, 1=active, 2=pending
+    is_recommend = models.BooleanField(default=False)
+    created_at = models.DateTimeField(
+        auto_now_add=True ,verbose_name='ساخته شده در')
+    updated_at = models.DateTimeField(
         auto_now=True, verbose_name='ویرایش شده در')
 
     class Meta:
@@ -47,12 +41,12 @@ class Post(models.Model):
         return self.title
 
 
-class File(models.Model):
-    title = models.CharField(max_length=255, verbose_name='عنوان فایل')
-    file = models.FileField(upload_to='files/post',
-                            null=True, blank=True, verbose_name='فایل')
+class PostComment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    parent = models.ForeignKey('PostComment', on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    text = models.TextField()
 
-    class Meta:
-        verbose_name = 'فایل'
-        verbose_name_plural = 'فایل‌ها'
+    def __str__(self):
+        return str(self.user) + self.post.title
