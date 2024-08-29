@@ -12,9 +12,9 @@ from django.urls import reverse
 
 class Post(models.Model):
     STATUS_CHOICES = [
-        ('Disable', 0),
-        ('Active', 1),
-        ('Pending', 2)
+        (0, 'Disable'),
+        (1, 'Active'),
+        (2, 'Pending')
     ]
 
     title = models.CharField(max_length=255, verbose_name='عنوان')
@@ -29,7 +29,7 @@ class Post(models.Model):
         default=2, choices=STATUS_CHOICES)  # 0=disable, 1=active, 2=pending
     is_recommend = models.BooleanField(default=False)
     created_at = models.DateTimeField(
-        auto_now_add=True ,verbose_name='ساخته شده در')
+        auto_now_add=True, verbose_name='ساخته شده در')
     updated_at = models.DateTimeField(
         auto_now=True, verbose_name='ویرایش شده در')
 
@@ -43,10 +43,12 @@ class Post(models.Model):
 
 class PostComment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    parent = models.ForeignKey('PostComment', on_delete=models.CASCADE, null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    parent = models.ForeignKey(
+        'PostComment', on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     text = models.TextField()
 
     def __str__(self):
-        return str(self.user) + self.post.title
+        return self.user.title
