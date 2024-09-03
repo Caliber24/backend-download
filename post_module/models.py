@@ -42,7 +42,7 @@ class Post(models.Model):
 
 
 class PostComment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     parent = models.ForeignKey(
         'PostComment', on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -51,4 +51,4 @@ class PostComment(models.Model):
     text = models.TextField()
 
     def __str__(self):
-        return self.user.title
+        return f'{self.user} - {self.post.title}'

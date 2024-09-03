@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from .models import Collection
-from .serializers import CollectionSerializer
+from .serializers import CollectionSerializer, DetailCollectionSerializer
 from django.db.models.aggregates import Count
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,12 +15,11 @@ from post_module.models import Post
 
 class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(posts_count=Count('posts')).all()
-    serializer_class = CollectionSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['parent_id']
     search_fields = ['title']
     ordering = ['title']
-    pagination_class = DefaultPagination
+    # pagination_class = DefaultPagination
     permission_classes = [IsAdminOrReadOnly]
 
     def destroy(self, request, *args, **kwargs):
@@ -29,3 +28,9 @@ class CollectionViewSet(ModelViewSet):
                             status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
         return super().destroy(request, *args, **kwargs)
+    
+    def get_serializer_class(self):
+        if self.action == 'retrieve' :
+            return DetailCollectionSerializer
+        else:
+            return CollectionSerializer

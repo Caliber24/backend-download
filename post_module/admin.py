@@ -7,11 +7,11 @@ from django.db.models.aggregates import Count
 # from django.db.models.query import QuerySet
 from .models import Post, PostComment
 from post_files.models import File
-from post_links.models import Link
+from post_links.models import LinkBox
 
 
 class LinkInline(admin.TabularInline):
-    model = Link
+    model = LinkBox
     min_num = 0
     extra = 0
 

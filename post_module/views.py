@@ -2,7 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
-from .serializers import PostSerializer, LinkSerializer, FileSerializer, LinkBoxSerializer, CommentSerializer
+from .serializers import PostSerializer, PostDetailSerializer, LinkSerializer, FileSerializer, LinkBoxSerializer, CommentSerializer
 from .models import Post, PostComment
 from post_files.models import File
 from utils.pagination import DefaultPagination
@@ -14,14 +14,25 @@ from utils.permissions import IsAdminOrReadOnly
 
 
 class PostViewSet(ModelViewSet):
-    queryset = Post.objects.prefetch_related('collection').all()
-    serializer_class = PostSerializer
+    http_method_names=['get','post','put', 'patch']
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['collection_id', 'is_recommend', 'status']
     search_fields = ['title', 'description', 'collection__title']
     ordering_fields = ['title', 'updated_at', 'created_at']
-    pagination_class = DefaultPagination
+    # pagination_class = DefaultPagination
     permission_classes = [IsAdminOrReadOnly]
+    
+    def get_queryset(self):
+        if self.action == 'retrieve':
+            return Post.objects.select_related('collection').prefetch_related('links_box', 'files').all()
+        else:
+            return Post.objects.select_related('collection').all()
+        
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return PostDetailSerializer
+        else:
+            return PostSerializer
 
 
 class LinkBoxViewSet(ModelViewSet):
