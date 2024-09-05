@@ -17,38 +17,22 @@ class Post(models.Model):
         (2, 'Pending')
     ]
 
-    title = models.CharField(max_length=255, verbose_name='عنوان')
-    image = models.ImageField(upload_to='images/post',
-                              verbose_name='تصویر پست', null=True, blank=True)
-    short_description = models.TextField(
-        verbose_name='متن کوتاه', null=True, blank=True)
-    description = models.TextField(verbose_name='متن')
+    title = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='images/post', null=True, blank=True)
+    short_description = models.TextField(null=True, blank=True)
+    description = models.TextField()
     collection = models.ForeignKey(
-        Collection, on_delete=models.CASCADE, related_name='posts', verbose_name=("دسته‌بندی"), null=True, blank=True)
+        Collection, on_delete=models.CASCADE, related_name='posts', null=True, blank=True)
     status = models.PositiveSmallIntegerField(
         default=2, choices=STATUS_CHOICES)  # 0=disable, 1=active, 2=pending
     is_recommend = models.BooleanField(default=False)
     created_at = models.DateTimeField(
-        auto_now_add=True, verbose_name='ساخته شده در')
+        auto_now_add=True)
     updated_at = models.DateTimeField(
-        auto_now=True, verbose_name='ویرایش شده در')
-
-    class Meta:
-        verbose_name = 'پست'
-        verbose_name_plural = 'پست‌ها'
+        auto_now=True)
 
     def __str__(self):
         return self.title
 
 
-class PostComment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    parent = models.ForeignKey(
-        'PostComment', on_delete=models.CASCADE, null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    text = models.TextField()
 
-    def __str__(self):
-        return f'{self.user} - {self.post.title}'

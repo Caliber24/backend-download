@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'post_module',
     'post_links',
     'post_files',
+    'post_comments',
     'collection_module',
     'debug_toolbar',
 ]

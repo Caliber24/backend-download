@@ -5,7 +5,7 @@ from django.utils.html import format_html, urlencode
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models.aggregates import Count
 # from django.db.models.query import QuerySet
-from .models import Post, PostComment
+from .models import Post
 from post_files.models import File
 from post_links.models import LinkBox
 
@@ -35,4 +35,4 @@ class PostAdmin(admin.ModelAdmin):
     inlines = [LinkInline, FileInline]
 
 
-admin.site.register(PostComment)
+
