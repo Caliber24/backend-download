@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework import serializers
 from .models import Link, LinkBox
 from post_module.models import Post
 
@@ -28,6 +29,17 @@ class LinkSerializer(ModelSerializer):
         return Link.objects.create(post_id=post_id, link_box_id=link_box_id, **validated_data)
 
 
+class CreateLinkSerializer(ModelSerializer):
+    class Meta:
+        model = Link
+        fields = ['id', 'title', 'link', 'link_box']
+    
+    def create(self, validated_data):
+        link_box = LinkBox.objects.get(id=validated_data['link_box'].id)
+        return Link.objects.create(post_id=link_box.post.id, **validated_data)
+
+
+
 class LinkBoxSerializer(ModelSerializer):
     links = SimpleLinkSerializer(many=True, read_only=True)
 
@@ -43,11 +55,19 @@ class LinkBoxSerializer(ModelSerializer):
 
 class ListLinkBoxSerializer(ModelSerializer):
     links = SimpleLinkSerializer(many=True, read_only=True)
-    post_title = SerializerMethodField(method_name='post__title', read_only=True)
     class Meta:
         model = LinkBox
-        fields = ['id', 'title', 'post', 'post_title', 'links']
-    
-    def post__title(self, link_box:LinkBox):
-        return link_box.post.title
-    
+        fields = ['id', 'title', 'links']
+
+
+class ListPostForLinkBoxSerializer(ModelSerializer):
+    links_box = ListLinkBoxSerializer(many=True)
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'links_box']
+
+class CreateLinkBoxSerializer(ModelSerializer):
+    links = SimpleLinkSerializer(many=True, read_only=True)
+    class Meta:
+        model = LinkBox
+        fields = ['id','title', 'post', 'links']

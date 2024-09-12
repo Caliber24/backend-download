@@ -15,16 +15,17 @@ class PostViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['collection', 'is_recommend', 'status']
     search_fields = ['title', 'collection__title', 'description',]
-    ordering_fields = ['title', 'updated_at', 'created_at']
-    # pagination_class = DefaultPagination
+    ordering_fields = ['updated_at', 'title',  'created_at']
+    pagination_class = DefaultPagination
     permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         if self.action == 'retrieve':
-            return Post.objects.select_related('collection').prefetch_related('links_box', 'files').all()
+            return Post.objects.select_related('collection').prefetch_related('links_box').all()
         else:
             return Post.objects.select_related('collection').all()
 
+    
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return DetailPostSerializer

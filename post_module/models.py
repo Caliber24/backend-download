@@ -10,6 +10,9 @@ from django.urls import reverse
 #     return 'images/post/{filename}'.format(filename=filename)
 
 
+
+
+
 class Post(models.Model):
     STATUS_CHOICES = [
         (0, 'Disable'),
@@ -19,10 +22,11 @@ class Post(models.Model):
 
     title = models.CharField(max_length=255)
     image = models.ImageField(upload_to='images/post', null=True, blank=True)
+    file = models.FileField(upload_to='files/post', null=True, blank=True)
     short_description = models.TextField(null=True, blank=True)
     description = models.TextField()
     collection = models.ForeignKey(
-        Collection, on_delete=models.CASCADE, related_name='posts', null=True, blank=True)
+        Collection, on_delete=models.SET_NULL, related_name='posts', null=True, blank=True)
     status = models.PositiveSmallIntegerField(
         default=2, choices=STATUS_CHOICES)  # 0=disable, 1=active, 2=pending
     is_recommend = models.BooleanField(default=False)
@@ -33,6 +37,3 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-
-
-

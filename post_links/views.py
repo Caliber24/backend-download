@@ -3,8 +3,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .serializers import LinkBoxSerializer, LinkSerializer, ListLinkBoxSerializer
+from .serializers import LinkBoxSerializer, LinkSerializer, ListLinkBoxSerializer, CreateLinkSerializer, CreateLinkBoxSerializer
 from .models import Link, LinkBox
+from post_module.models import Post
 from utils.permissions import IsAdminOrReadOnly
 # Create your views here.
 
@@ -43,12 +44,28 @@ class LinkViewSet(ModelViewSet):
             return {'post_id': links_box.post.id,
                     'link_box_id': self.kwargs['linksbox_pk']}
 
+class CreateLinkViewSet(ModelViewSet):
+    http_method_names = ['post','head', 'options']
+    queryset = Link.objects.all()
+    serializer_class= CreateLinkSerializer
 
 class ListLinkBoxViewSet(ModelViewSet):
-    queryset = LinkBox.objects.prefetch_related(
-        'links').select_related('post').all()
-    serializer_class = ListLinkBoxSerializer
+    queryset = Post.objects.prefetch_related(
+        'links_box').all()
+    
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['post']
-    search_fields = ['title','post__title']
+    search_fields = ['title','links_box__title']
     # permission_classes = [permissions.IsAdminUser]
+    
+    def get_queryset(self):
+        if self.action == 'list':
+            return Post.objects.prefetch_related(
+                'links_box').all()
+        else:
+            return LinkBox.objects.all()
+    
+    def get_serializer_class(self):
+        if self.action ==  'list' :
+            return ListPostForLinkBoxSerializer
+        return CreateLinkBoxSerializer
+        

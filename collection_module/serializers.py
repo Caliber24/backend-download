@@ -4,40 +4,31 @@ from rest_framework import serializers
 from .models import Collection
 
 
+
+
+
 class SimpleCollectionSerializer(ModelSerializer):
+    sub_collections = SerializerMethodField(method_name='get_sub_collections')
+    
     class Meta:
         model = Collection
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'sub_collections']
 
+    def get_sub_collections(self, collection:Collection):
+        return SimpleCollectionSerializer(collection.sub_collections.all(), many=True).data
 
 class CollectionSerializer(ModelSerializer):
-    sub_collections = SimpleCollectionSerializer(read_only=True, many=True)
+    sub_collections = SimpleCollectionSerializer(read_only=True, many=True) 
     parent_title = SerializerMethodField(method_name='parent__title')
 
     class Meta:
         model = Collection
-        fields = ['id', 'title', 'posts_count',
+        fields = ['id', 'title',
                   'parent', 'parent_title', 'sub_collections']
 
-    posts_count = serializers.IntegerField(read_only=True)
 
     def parent__title(self, collection: Collection):
         if collection.parent:
             return collection.parent.title
-        else :
-            pass
-            
-
-class DetailCollectionSerializer(ModelSerializer):
-    sub_collections = SimpleCollectionSerializer(many=True)
-    parent_title = SerializerMethodField(method_name='parent__title')
-
-    class Meta:
-        model = Collection
-        fields = ['id', 'title', 'posts_count',
-                  'parent', 'parent_title', 'sub_collections']
-
-    posts_count = serializers.IntegerField(read_only=True)
-
-    def parent__title(self, parent: Collection):
-        return parent.title
+        else:
+            return

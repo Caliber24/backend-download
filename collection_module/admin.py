@@ -6,8 +6,8 @@ from .models import Collection
 
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
-    list_display = ['title', 'parent', 'is_active']
-    list_editable = ['parent', 'is_active']
+    list_display = ['title', 'parent']
+    list_editable = ['parent']
     search_fields = ['title']
     autocomplete_fields = ['parent']
     ordering = ['title']
