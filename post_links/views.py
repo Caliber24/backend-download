@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .serializers import LinkBoxSerializer, LinkSerializer, ListLinkBoxSerializer, CreateLinkSerializer, CreateLinkBoxSerializer
+from .serializers import LinkBoxSerializer, LinkSerializer, ListPostForLinkBoxSerializer, CreateLinkSerializer, CreateLinkBoxSerializer
 from .models import Link, LinkBox
 from post_module.models import Post
 from utils.permissions import IsAdminOrReadOnly
