@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 import locale
 from datetime import timedelta
 from pathlib import Path
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     'posts',
     'links',
     'collection'
-    ]
+]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -82,15 +83,15 @@ WSGI_APPLICATION = 'backend_download.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'backend_download',
-        'HOST': 'localhost',
-        'USER': 'root',
-        'PASSWORD': '3831@Amir'
-    }
+    {
+     'ENGINE':   'django.db.backends.mysql',
+     'HOST':     os.getenv("MYSQL_DB_HOST"),
+     'NAME':     os.getenv("MYSQL_DB_NAME"),
+     'USER':     os.getenv("MYSQL_DB_USER"),
+     'PASSWORD': os.getenv("MYSQL_DB_PASS"),
+     'PORT':     os.getenv("MYSQL_DB_PORT"),
+     },
 }
 
 
