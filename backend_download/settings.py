@@ -43,13 +43,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'djoser',
-    'core',
-    'post_module',
-    'post_links',
-    'post_comments',
-    'collection_module',
-    'debug_toolbar',
-]
+    'posts',
+    'links',
+    'collection'
+    ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -60,7 +57,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'backend_download.urls'
@@ -144,9 +140,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
 
 
 MEDIA_URL = '/media/'
@@ -164,7 +157,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-AUTH_USER_MODEL = 'core.User'
 
 DJOSER = {
     'serializers': {
